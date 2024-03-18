@@ -9,7 +9,10 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	netv1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 
@@ -21,6 +24,7 @@ type client struct {
 	namespace string
 	timeout   time.Duration
 	*kubernetes.Clientset
+	*dynamic.DynamicClient
 }
 
 func newClient(baseURL, namespace, bearerTokenFile string, bearerToken string, timeout time.Duration, tlsConfig tls.ClientConfig) (*client, error) {
@@ -57,10 +61,16 @@ func newClient(baseURL, namespace, bearerTokenFile string, bearerToken string, t
 		return nil, err
 	}
 
+	d, err := dynamic.NewForConfig(clientConfig)
+	if err != nil {
+		return nil, err
+	}
+
 	return &client{
-		Clientset: c,
-		timeout:   timeout,
-		namespace: namespace,
+		DynamicClient: d,
+		Clientset:     c,
+		timeout:       timeout,
+		namespace:     namespace,
 	}, nil
 }
 
@@ -161,4 +171,10 @@ func (c *client) getTLSSecrets(ctx context.Context) (*corev1.SecretList, error) 
 	return c.CoreV1().Secrets(c.namespace).List(ctx, metav1.ListOptions{
 		FieldSelector: labels.Set(labelSelector.MatchLabels).String(),
 	})
+}
+
+func (c *client) getCustomResource(ctx context.Context, resource schema.GroupVersionResource) (*unstructured.UnstructuredList, error) {
+	ctx, cancel := context.WithTimeout(ctx, c.timeout)
+	defer cancel()
+	return c.Resource(resource).Namespace(c.namespace).List(ctx, metav1.ListOptions{})
 }

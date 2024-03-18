@@ -8,10 +8,12 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
 	"k8s.io/apimachinery/pkg/api/resource"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 
 	"github.com/influxdata/telegraf"
 	"github.com/influxdata/telegraf/config"
@@ -29,15 +31,16 @@ const (
 
 // KubernetesInventory represents the config object for the plugin.
 type KubernetesInventory struct {
-	URL               string          `toml:"url"`
-	KubeletURL        string          `toml:"url_kubelet"`
-	BearerToken       string          `toml:"bearer_token"`
-	BearerTokenString string          `toml:"bearer_token_string" deprecated:"1.24.0;use 'BearerToken' with a file instead"`
-	Namespace         string          `toml:"namespace"`
-	ResponseTimeout   config.Duration `toml:"response_timeout"` // Timeout specified as a string - 3s, 1m, 1h
-	ResourceExclude   []string        `toml:"resource_exclude"`
-	ResourceInclude   []string        `toml:"resource_include"`
-	MaxConfigMapAge   config.Duration `toml:"max_config_map_age"`
+	URL                   string          `toml:"url"`
+	KubeletURL            string          `toml:"url_kubelet"`
+	BearerToken           string          `toml:"bearer_token"`
+	BearerTokenString     string          `toml:"bearer_token_string" deprecated:"1.24.0;use 'BearerToken' with a file instead"`
+	Namespace             string          `toml:"namespace"`
+	ResponseTimeout       config.Duration `toml:"response_timeout"` // Timeout specified as a string - 3s, 1m, 1h
+	ResourceExclude       []string        `toml:"resource_exclude"`
+	ResourceInclude       []string        `toml:"resource_include"`
+	MaxConfigMapAge       config.Duration `toml:"max_config_map_age"`
+	CustomResourceInclude []string        `toml:"custom_resource_include"` //comma separated GVR
 
 	SelectorInclude []string `toml:"selector_include"`
 	SelectorExclude []string `toml:"selector_exclude"`
@@ -49,7 +52,8 @@ type KubernetesInventory struct {
 	client     *client
 	httpClient *http.Client
 
-	selectorFilter filter.Filter
+	selectorFilter  filter.Filter
+	customResources []schema.GroupVersionResource
 }
 
 func (*KubernetesInventory) SampleConfig() string {
@@ -81,6 +85,21 @@ func (ki *KubernetesInventory) Init() error {
 
 		if err != nil {
 			ki.Log.Warnf("unable to create http client: %v", err)
+		}
+	}
+
+	ki.customResources = make([]schema.GroupVersionResource, len(ki.CustomResourceInclude))
+	if len(ki.CustomResourceInclude) > 0 {
+		for i, resource := range ki.CustomResourceInclude {
+			GVRVals := strings.Split(resource, ":")
+			if len(GVRVals) != 3 {
+				continue
+			}
+			ki.customResources[i] = schema.GroupVersionResource{
+				Group:    GVRVals[0],
+				Version:  GVRVals[1],
+				Resource: GVRVals[2],
+			}
 		}
 	}
 	return nil
@@ -129,6 +148,7 @@ var availableCollectors = map[string]func(ctx context.Context, acc telegraf.Accu
 	"persistentvolumeclaims": collectPersistentVolumeClaims,
 	"resourcequotas":         collectResourceQuotas,
 	"secrets":                collectSecrets,
+	"customresource":         collectCustomResource,
 }
 
 func atoi(s string) int64 {
@@ -200,6 +220,7 @@ const (
 	statefulSetMeasurement           = "kubernetes_statefulset"
 	resourcequotaMeasurement         = "kubernetes_resourcequota"
 	certificateMeasurement           = "kubernetes_certificate"
+	customResourceMeasurement        = "kubernetes_custom_resource"
 )
 
 func init() {
