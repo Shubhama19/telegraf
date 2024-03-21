@@ -40,14 +40,14 @@ require (
 	github.com/aristanetworks/goarista v0.0.0-20190325233358-a123909ec740
 	github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5
 	github.com/awnumar/memguard v0.22.4
-	github.com/aws/aws-sdk-go-v2 v1.25.3
+	github.com/aws/aws-sdk-go-v2 v1.26.0
 	github.com/aws/aws-sdk-go-v2/config v1.27.5
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.5
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.15.2
 	github.com/aws/aws-sdk-go-v2/service/cloudwatch v1.36.1
 	github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs v1.34.3
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.30.2
-	github.com/aws/aws-sdk-go-v2/service/ec2 v1.149.3
+	github.com/aws/aws-sdk-go-v2/service/ec2 v1.151.1
 	github.com/aws/aws-sdk-go-v2/service/kinesis v1.27.1
 	github.com/aws/aws-sdk-go-v2/service/sts v1.28.4
 	github.com/aws/aws-sdk-go-v2/service/timestreamwrite v1.25.2
@@ -68,7 +68,7 @@ require (
 	github.com/digitalocean/go-libvirt v0.0.0-20221205150000-2939327a8519
 	github.com/dimchansky/utfbom v1.1.1
 	github.com/djherbis/times v1.6.0
-	github.com/docker/docker v25.0.0+incompatible
+	github.com/docker/docker v25.0.5+incompatible
 	github.com/docker/go-connections v0.5.0
 	github.com/dynatrace-oss/dynatrace-metric-utils-go v0.5.0
 	github.com/eclipse/paho.golang v0.21.0
@@ -118,7 +118,7 @@ require (
 	github.com/intel/powertelemetry v1.0.1
 	github.com/jackc/pgconn v1.14.3
 	github.com/jackc/pgio v1.0.0
-	github.com/jackc/pgtype v1.14.0
+	github.com/jackc/pgtype v1.14.2
 	github.com/jackc/pgx/v4 v4.18.2
 	github.com/jeremywohl/flatten/v2 v2.0.0-20211013061545-07e4a09fb8e4
 	github.com/jhump/protoreflect v1.15.6
@@ -177,7 +177,7 @@ require (
 	github.com/snowflakedb/gosnowflake v1.7.2
 	github.com/srebhan/cborquery v1.0.1
 	github.com/srebhan/protobufquery v0.0.0-20230803132024-ae4c0d878e55
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	github.com/tbrandon/mbserver v0.0.0-20170611213546-993e1772cc62
 	github.com/testcontainers/testcontainers-go v0.27.0
 	github.com/testcontainers/testcontainers-go/modules/kafka v0.26.1-0.20231116140448-68d5f8983d09
@@ -198,16 +198,16 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.21.0
 	go.starlark.net v0.0.0-20231121155337-90ade8b19d09
 	go.step.sm/crypto v0.43.0
-	golang.org/x/crypto v0.20.0
+	golang.org/x/crypto v0.21.0
 	golang.org/x/mod v0.14.0
 	golang.org/x/net v0.21.0
 	golang.org/x/oauth2 v0.17.0
 	golang.org/x/sync v0.6.0
 	golang.org/x/sys v0.18.0
-	golang.org/x/term v0.17.0
+	golang.org/x/term v0.18.0
 	golang.org/x/text v0.14.0
 	golang.zx2c4.com/wireguard/wgctrl v0.0.0-20211230205640-daad0b7ba671
-	gonum.org/v1/gonum v0.14.0
+	gonum.org/v1/gonum v0.15.0
 	google.golang.org/api v0.165.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240205150955-31a09d347014
 	google.golang.org/grpc v1.61.1
@@ -266,15 +266,15 @@ require (
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.1 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.13.7 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.16.7 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.3 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.3 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.4 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.4 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.8.0 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/v4a v1.3.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/dynamodbstreams v1.20.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.11.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.3.3 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery v1.9.3 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.11.5 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.11.6 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.17.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.51.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.20.1 // indirect
@@ -440,7 +440,7 @@ require (
 	github.com/spf13/cast v1.6.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stoewer/go-strcase v1.2.0 // indirect
-	github.com/stretchr/objx v0.5.0 // indirect
+	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.13 // indirect

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"slices"
 	"strconv"
 	"sync"
 	"time"
@@ -19,6 +20,10 @@ import (
 
 //go:embed sample.conf
 var sampleConfig string
+
+var ignoredErrors = []string{
+	"NXDOMAIN",
+}
 
 type ResultType uint64
 
@@ -87,7 +92,7 @@ func (d *DNSQuery) Gather(acc telegraf.Accumulator) error {
 				defer wg.Done()
 
 				fields, tags, err := d.query(domain, server)
-				if err != nil {
+				if err != nil && !slices.Contains(ignoredErrors, tags["rcode"]) {
 					var opErr *net.OpError
 					if !errors.As(err, &opErr) || !opErr.Timeout() {
 						acc.AddError(err)
@@ -158,14 +163,22 @@ func (d *DNSQuery) query(domain string, server string) (map[string]interface{}, 
 	// Fill out custom fields for specific record types
 	for _, record := range r.Answer {
 		switch x := record.(type) {
+		case *dns.A:
+			fields["name"] = x.Hdr.Name
+		case *dns.AAAA:
+			fields["name"] = x.Hdr.Name
+		case *dns.CNAME:
+			fields["name"] = x.Hdr.Name
 		case *dns.MX:
+			fields["name"] = x.Hdr.Name
 			fields["preference"] = x.Preference
 		case *dns.SOA:
-			fields["serial"] = x.Serial
-			fields["refresh"] = x.Refresh
-			fields["retry"] = x.Retry
 			fields["expire"] = x.Expire
 			fields["minttl"] = x.Minttl
+			fields["name"] = x.Hdr.Name
+			fields["refresh"] = x.Refresh
+			fields["retry"] = x.Retry
+			fields["serial"] = x.Serial
 		}
 	}
 
